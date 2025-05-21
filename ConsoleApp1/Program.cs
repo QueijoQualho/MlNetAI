@@ -82,11 +82,15 @@ namespace ConsoleApp1
 
             // Treinando o modelo e expotando 
 
-            var model = pipeline.Fit(data);
+            var split = mlContext.Data.TrainTestSplit(data, testFraction: 0.2); 
+            var trainData = split.TrainSet;
+            var testData = split.TestSet;
+
+            var model = pipeline.Fit(trainData);
 
             string modelPath = "ModeloSinistro.zip";
             mlContext.Model.Save(model, data.Schema, modelPath);
-            Console.WriteLine("✅ Modelo salvo em: " + modelPath);
+            Console.WriteLine("Modelo salvo em: " + modelPath);
 
             using var stream = new FileStream(modelPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             var loadedModel = mlContext.Model.Load(stream, out var modelInputSchema);
@@ -115,8 +119,11 @@ namespace ConsoleApp1
                 ProbabilidadeSinistro = 0 // nao usa
             };
 
-            var prediction = predictionEngine.Predict(exemplo);
-            Console.WriteLine($"🔍 Previsão de sinistro: {prediction.PredictedProbabilidadeSinistro:F4}");
+            var predictions = model.Transform(testData);
+            var metrics = mlContext.Regression.Evaluate(predictions, labelColumnName: nameof(InputData.ProbabilidadeSinistro));
+
+            Console.WriteLine($"R²: {metrics.RSquared:F4}");
+            Console.WriteLine($"RMSE: {metrics.RootMeanSquaredError:F4}");
         }
     }
 }
