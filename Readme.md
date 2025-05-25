@@ -11,6 +11,9 @@ A inteligência artificial deste projeto foi desenvolvida com ML.NET, utilizando
 
 > **Nota:** O dataset utilizado para o treinamento do modelo foi gerado aleatoriamente utilizando a biblioteca Faker em Python, simulando cenários realistas para fins de desenvolvimento e testes.
 
+## Link do Video
+https://youtu.be/JfSKCu02P78?si=sZqrkq-d0wNAsGa2
+
 ## Stack Tecnológica
 * ASP.NET Core 8
 * ML.NET
